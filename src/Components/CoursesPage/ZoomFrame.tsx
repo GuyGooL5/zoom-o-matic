@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { LTIFormJSON } from '../interfaces'
+import { LTIFormJSON } from '../../interfaces'
 
 interface IProps {
     lti: LTIFormJSON

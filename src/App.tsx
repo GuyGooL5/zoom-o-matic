@@ -1,19 +1,19 @@
 import React from 'react';
-import './App.css';
-import Home from './Components/Home';
+import HomePage from './Components/HomePage';
+import { ErrorContextProvider } from './ContextProviders/ErrorContext';
 import { LocalStorageContextProvider } from './ContextProviders/LocalStorageContext';
 import { SnackbarContextProvider } from './ContextProviders/SnackbarContext';
 
-function App() {
+export default function App() {
   return (
     <div className="App" style={{ margin: 0, padding: 0 }}>
       <LocalStorageContextProvider>
         <SnackbarContextProvider>
-          <Home />
+          <ErrorContextProvider>
+            <HomePage />
+          </ErrorContextProvider>
         </SnackbarContextProvider>
       </LocalStorageContextProvider>
     </div>
   );
 }
-
-export default App;
