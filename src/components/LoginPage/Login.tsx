@@ -16,14 +16,13 @@ const Login = forwardRef(({ url }: ILoginProps, ref) => {
     const [tosChecked, setTosChecked] = useState(false);
     const [creds, setCreds] = useState({ username: "", password: "" });
     const [loading, setLoading] = useState(false)
-    const [{ token, moodleUrl }, dispatchLocalStorageStore] = useGlobalStore();
+    const [{ token, moodleUrl }, dispatchGlobalStore] = useGlobalStore();
 
     const { requestError } = useError();
 
     useEffect(() => {
-        console.log('abuya');
-        if (token) fetchUser().then(user => setUser(user)(dispatchLocalStorageStore));
-    }, [dispatchLocalStorageStore, token])
+        if (token) fetchUser().then(user => setUser(user)(dispatchGlobalStore));
+    }, [dispatchGlobalStore, token])
 
     function login() {
         setLoading(true);
@@ -31,11 +30,10 @@ const Login = forwardRef(({ url }: ILoginProps, ref) => {
         Axios.post(`${url}/login/token.php`, `username=${creds.username}&password=${creds.password}&service=moodle_mobile_app`
         ).then(({ data }) => {
             if (data.errorcode || !data.token) {
-                setLoading(false);
                 requestError(data);
             }
-            else setToken(data.token)(dispatchLocalStorageStore);
-        }).catch((e) => { requestError(e); setLoading(false); });
+            else setToken(data.token)(dispatchGlobalStore);
+        }).catch((e) => { requestError(e); }).finally(() => setLoading(false));
     }
 
     return <Container innerRef={ref} maxWidth='sm' style={{ marginTop: 16 }}>
@@ -58,7 +56,7 @@ const Login = forwardRef(({ url }: ILoginProps, ref) => {
                 <Grid item xs={12} >
                     <Paper variant="outlined" style={{ paddingLeft: 8, paddingRight: 8 }}>
                         <Grid container spacing={1} justify="space-between" alignItems="center" >
-                            <Grid item><IconButton color="primary" onClick={() => setMoodleUrl(null)}><Edit /></IconButton></Grid>
+                            <Grid item><IconButton color="primary" onClick={() => setMoodleUrl(null)(dispatchGlobalStore)}><Edit /></IconButton></Grid>
                             <Grid item><Typography variant="body1" color="textSecondary"><Link target="_blank" href={moodleUrl as string}>{moodleUrl}</Link> :אתר המודל</Typography></Grid>
                         </Grid>
                     </Paper>

@@ -31,7 +31,7 @@ function MessageSnackBar({ open, onClose, persist, message, backgroundColor, tex
     const action = button ?
         <Button style={{ color: button.color ?? "pink", marginRight: "auto", marginLeft: -8, paddingRight: -16 }}
             onClick={buttonCloseFn}>{button.text}</Button> : null
-    return <Snackbar dir="rtl" open={open} message={message} action={action} onClose={handleClose} autoHideDuration={duration}
+    return <Snackbar dir="rtl" open={open} message={message} action={action} onClose={handleClose} autoHideDuration={duration ?? 3000}
         {...props} style={{ backgroundColor, color }}
     />
 }

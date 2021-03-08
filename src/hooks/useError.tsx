@@ -1,31 +1,48 @@
-import { setUser, setToken } from '../actions/localStorageActions';
+import { setUser, setToken, setMoodleUrl } from '../actions/localStorageActions';
 import { useGlobalStore } from '../stores/GlobalStore';
 import { useSnackbar } from '../ContextProviders/SnackbarContext';
 import { useCallback } from 'react';
+import { useAlert } from '../ContextProviders/AlertContext';
+import { Typography } from '@material-ui/core';
 
 
-type ErrorCode = "invalidtoken" | "invalidlogin";
+type ErrorCode = "invalidtoken" | "invalidlogin" | "invalidtoolid";
+
 
 
 const useError = () => {
 
     const openSnackbar = useSnackbar();
-    const [, dispatchLocalStorage] = useGlobalStore();
+    const openAlert = useAlert()
+    const [, dispatchGlobalStore] = useGlobalStore();
 
-    const requestError = useCallback((e: { errorcode: ErrorCode, error: string }) => {
-        switch (e.errorcode) {
+    const onInvalidToken = useCallback(() => {
+        openAlert({
+            title: "שגיאת חיבור",
+            content: <Typography>טוקן החיבור לא תקין או פג תוקף, אנא התחבר/י מחדש.</Typography>, button: { text: "התחברות" }, onClose: () => {
+                setMoodleUrl("https://md.hit.ac.il")(dispatchGlobalStore);
+                setUser(null)(dispatchGlobalStore);
+                setToken(null)(dispatchGlobalStore);
+            }
+        })
+    }, [openAlert, dispatchGlobalStore]);
+
+
+
+
+
+    const requestError = useCallback((errorcode?: ErrorCode) => {
+        switch (errorcode) {
             case "invalidtoken":
-                openSnackbar({ message: "טוקן החיבור לא תקין, אנא התחברו מחדש.", duration: 5000 });
-                setUser(null)(dispatchLocalStorage);
-                setToken(null)(dispatchLocalStorage);
+                onInvalidToken();
                 break;
-            case "invalidlogin":
-                openSnackbar({ message: e.error });
+            case "invalidtoolid":
+                openSnackbar({ message: "אחת או יותר מהפעילויות לא קיימות אז הן נמחקו", button: { text: "הבנתי" }, persist: true, duration: 7000 });
                 break;
             default:
-                openSnackbar({ message: JSON.stringify(e) });
+                openSnackbar({ message: "אירעה שגיאה" });
         }
-    }, [dispatchLocalStorage, openSnackbar]);
+    }, [onInvalidToken, openSnackbar]);
 
     return { requestError };
 }

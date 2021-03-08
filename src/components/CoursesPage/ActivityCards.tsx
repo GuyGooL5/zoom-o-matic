@@ -1,6 +1,6 @@
 import { CircularProgress, Divider, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
 import { Add, Delete } from '@material-ui/icons';
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { deleteToolid } from '../../actions/localStorageActions';
 import useError from '../../hooks/useError';
 import { LTI } from '../../interfaces';
@@ -23,16 +23,20 @@ function ActivityCard({ toolid, editMode, onSelect, onDelete }: IActivityCardPro
 
     const [, dispatchGlobalStore] = useGlobalStore();
 
-    useEffect(() => {
-        fetchLti(toolid).then(setLti).catch(requestError);
 
-    }, [requestError, toolid])
-
-
-    function handleDelete() {
+    const handleDelete = useCallback(() => {
         deleteToolid(toolid)(dispatchGlobalStore)
         onDelete();
-    }
+    }, [dispatchGlobalStore, onDelete, toolid]);
+
+    useEffect(() => {
+        fetchLti(toolid).then(setLti).catch(e => {
+            if (e?.errorcode === "invalidtoken") requestError('invalidtoken');
+            else requestError("invalidtoolid");
+            handleDelete();
+        });
+
+    }, [handleDelete, requestError, toolid])
 
     return <ListItem button>
         {lti ?

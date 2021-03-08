@@ -45,7 +45,7 @@ export default function CoursesPage(): JSX.Element {
                     <Grid item><Typography variant="h3">דף פעילויות</Typography></Grid>
                     <Grid item container spacing={2} >
                         <Grid item><Button startIcon={<Add />} variant="contained" color="secondary" onClick={handleOpenScanDialog}>הוסף פעילות</Button></Grid>
-                        <Grid item><Button color="default" onClick={() => setEditMode(last => !last)}>{editMode?"בטל עריכה":"עריכה"}</Button></Grid>
+                        {toolids?.length !== 0 ? <Grid item><Button color="default" onClick={() => setEditMode(last => !last)}>{editMode ? "בטל עריכה" : "עריכה"}</Button></Grid> : null}
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>

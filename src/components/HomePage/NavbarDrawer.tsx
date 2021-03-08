@@ -29,11 +29,11 @@ export default function NavbarDrawer({ open, onClose }: INavbarDrawerProps) {
 
     const [, dispatchLocalStorage] = useGlobalStore();
     const openSnackbar = useSnackbar();
-    const { openAlert } = useAlert()
+    const openAlert = useAlert()
 
     function invokeDialog() {
         openAlert({
-            title: "אודות",
+            title: "אודות", 
             content:
                 <Typography>
                     אתר זה הוא פרוייקט בשלבים ראשוניים כדי להקל על חיי הסטודנטים בעידן הזום והמודל.
@@ -41,7 +41,7 @@ export default function NavbarDrawer({ open, onClose }: INavbarDrawerProps) {
                     <Link target="_blank" href="https://github.com/GuyGooL5/zoom-o-matic">קישור לפרויקט בגיט</Link><br />
                     <Link href="/license.txt">תנאי השימוש</Link>
                 </Typography>,
-            dismissText: "סגור"
+            button: { text: "סגור" }
         })
     }
 

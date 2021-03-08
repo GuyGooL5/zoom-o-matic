@@ -13,7 +13,7 @@ const AcademyUrl = React.forwardRef((p: IAcademyUrlProps, ref) => {
     const [url, setUrl] = useState("")
     const [loading, setLoading] = useState(false);
     const [, dispatchLocalStorage] = useGlobalStore();
-    const { openAlert } = useAlert();
+    const openAlert = useAlert();
 
     async function updateURL() {
         setLoading(true);
