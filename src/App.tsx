@@ -1,26 +1,19 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import HomePage from './components/HomePage';
+import { GlobalStore } from './stores/GlobalStore';
+import SnackbarContextProvider from './ContextProviders/SnackbarContext';
+import AlertContextProvider from './ContextProviders/AlertContext';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{ margin: 0, padding: 0 }}>
+      <GlobalStore>
+        <SnackbarContextProvider>
+          <AlertContextProvider>
+            <HomePage />
+          </AlertContextProvider>
+        </SnackbarContextProvider>
+      </GlobalStore>
     </div>
   );
 }
-
-export default App;
