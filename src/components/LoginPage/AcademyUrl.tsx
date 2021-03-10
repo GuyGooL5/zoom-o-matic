@@ -1,21 +1,30 @@
 import { Button, Container, Grid, TextField, Typography } from '@material-ui/core';
-import React, { useState } from 'react'
+import React, { MouseEventHandler, useState } from 'react'
 import { join } from 'path'
 import { useGlobalStore } from '../../stores/GlobalStore';
 import { Axios } from '../../config';
 import { setMoodleUrl } from '../../actions/localStorageActions';
 import { useAlert } from '../../ContextProviders/AlertContext';
 
-interface IAcademyUrlProps {
-}
-const AcademyUrl = React.forwardRef((p: IAcademyUrlProps, ref) => {
+export default function AcademyUrl() {
 
     const [url, setUrl] = useState("")
     const [loading, setLoading] = useState(false);
-    const [, dispatchLocalStorage] = useGlobalStore();
+    const [, dispatchGlobalStore] = useGlobalStore();
     const openAlert = useAlert();
+    const tryUrl = (url: string): Promise<boolean> => {
+        return new Promise((resolve) => {
+            Axios.post(new URL(join(url, '/login/token.php')).toString(), {
+                method: 'POST',
+            }).then(({ status, data }) => {
+                if (status !== 200) resolve(false);
+                resolve(!!data?.errorcode);
+            }).catch(() => resolve(false))
+        })
+    }
 
-    async function updateURL() {
+    const updateURL: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault();
         setLoading(true);
         let tempUrl: URL;
         try {
@@ -24,10 +33,10 @@ const AcademyUrl = React.forwardRef((p: IAcademyUrlProps, ref) => {
                 new URL(url);
 
             if (await tryUrl(tempUrl.href)) {
-                setMoodleUrl(tempUrl.toString())(dispatchLocalStorage);
+                setMoodleUrl(tempUrl.toString())(dispatchGlobalStore);
             }
             else if (await tryUrl(tempUrl.origin)) {
-                setMoodleUrl(tempUrl.toString())(dispatchLocalStorage);
+                setMoodleUrl(tempUrl.toString())(dispatchGlobalStore);
             }
             else throw Error();
         } catch (e) {
@@ -36,23 +45,9 @@ const AcademyUrl = React.forwardRef((p: IAcademyUrlProps, ref) => {
         }
     }
 
-    function tryUrl(url: string): Promise<boolean> {
-        return new Promise((resolve) => {
-            Axios.post(new URL(join(url, '/login/token.php')).toString(), {
-                method: 'POST',
-            })
-                .then(({ status, data }) => {
-                    if (status !== 200) resolve(false);
-                    resolve(!!data?.errorcode);
-                })
-                .catch(() => resolve(false))
-        })
-    }
-
     return <Container maxWidth="sm" style={{ marginTop: 16 }}>
         <form>
-
-            <Grid innerRef={ref} container spacing={2} direction="row-reverse">
+            <Grid container spacing={2} direction="row-reverse">
                 <Grid item xs={12}>
                     <Typography variant="h5">אני הכנס/י את כתובת המודל של מוסד הלימודים שלך</Typography>
                 </Grid>
@@ -65,5 +60,4 @@ const AcademyUrl = React.forwardRef((p: IAcademyUrlProps, ref) => {
             </Grid>
         </form>
     </Container>
-})
-export default AcademyUrl
+}

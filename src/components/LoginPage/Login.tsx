@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { Button, Paper, Checkbox, Container, Grid, IconButton, Link, TextField, Typography, CircularProgress } from '@material-ui/core';
 import { Edit, Visibility, VisibilityOff } from '@material-ui/icons';
 import useError from '../../hooks/useError';
@@ -10,7 +10,7 @@ import { setMoodleUrl, setToken, setUser } from '../../actions/localStorageActio
 interface ILoginProps {
     url: string;
 }
-const Login = forwardRef(({ url }: ILoginProps, ref) => {
+export default function Login({ url }: ILoginProps) {
 
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [tosChecked, setTosChecked] = useState(false);
@@ -24,7 +24,8 @@ const Login = forwardRef(({ url }: ILoginProps, ref) => {
         if (token) fetchUser().then(user => setUser(user)(dispatchGlobalStore));
     }, [dispatchGlobalStore, token])
 
-    function login() {
+    const login: MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.preventDefault();
         setLoading(true);
 
         Axios.post(`${url}/login/token.php`, `username=${creds.username}&password=${creds.password}&service=moodle_mobile_app`
@@ -36,9 +37,8 @@ const Login = forwardRef(({ url }: ILoginProps, ref) => {
         }).catch((e) => { requestError(e); }).finally(() => setLoading(false));
     }
 
-    return <Container innerRef={ref} maxWidth='sm' style={{ marginTop: 16 }}>
+    return <Container maxWidth="sm" style={{ marginTop: 16 }}>
         <form>
-
             <Grid container spacing={2} direction="row-reverse">
                 <Grid item xs={12}>
                     <Typography variant="h5">אנא התחבר/י למשתמש המודל שלך</Typography>
@@ -70,6 +70,5 @@ const Login = forwardRef(({ url }: ILoginProps, ref) => {
             </Grid>
         </form>
     </Container>
-})
+}
 
-export default Login;

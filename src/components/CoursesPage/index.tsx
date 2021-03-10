@@ -41,11 +41,11 @@ export default function CoursesPage(): JSX.Element {
     return <>
         <Container maxWidth="md" style={{ marginTop: 16, height: "100vh" }}>
             <Grid container direction="row">
-                <Grid item container xs={12} direction="row-reverse" alignItems="center" justify="space-between">
-                    <Grid item><Typography variant="h3">דף פעילויות</Typography></Grid>
-                    <Grid item container spacing={2} >
+                <Grid item container direction="row-reverse" xs={12} spacing={2} alignItems="center" justify="space-between">
+                    <Grid item xs={12} sm={4}><Typography variant="h4" style={{textAlign:scanDialogBreakpoint?"center":"right"}} >דף פעילויות</Typography></Grid>
+                    <Grid item xs={12} sm={8} container spacing={2}  >
                         <Grid item><Button startIcon={<Add />} variant="contained" color="secondary" onClick={handleOpenScanDialog}>הוסף פעילות</Button></Grid>
-                        {toolids?.length !== 0 ? <Grid item><Button color="default" onClick={() => setEditMode(last => !last)}>{editMode ? "בטל עריכה" : "עריכה"}</Button></Grid> : null}
+                        {toolids?.length ? <Grid item><Button color="default" onClick={() => setEditMode(last => !last)}>{editMode ? "בטל עריכה" : "עריכה"}</Button></Grid> : null}
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
